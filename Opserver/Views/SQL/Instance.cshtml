@@ -101,6 +101,7 @@ if (counter == null)
                             </div>
                             <div class="value-block col-md-3 col-sm-6" title="@pd.FullVersion">
                                 <a href="http://sqlserverbuilds.blogspot.com/" target="_blank">@pd.Version</a>
+                                <span style="font-size: xx-small">(@pd.HostPlatform)</span>
                                 <label>Version</label>
                             </div>
                             <div class="value-block col-md-3 col-sm-6" title="@pd.Edition">
@@ -154,7 +155,7 @@ if (counter == null)
                             <div class="value-block col-md-3">
                                 <div class="progress">
                                     <div class="progress-bar" style="width: @(i.CurrentCPUPercent?.ToString(CultureInfo.InvariantCulture))%;"></div>
-                                    <span>@i.CurrentCPUPercent.ToString()%</span>
+                                    <span>@((pd.HostPlatform == "Linux") ? "Unknown" : i.CurrentCPUPercent.ToString() + "%")</span>
                                 </div>
                                 <label>CPU</label>
                             </div>

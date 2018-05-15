@@ -50,6 +50,7 @@ namespace StackExchange.Opserver.Data.SQL
             public long VirtualMemoryBytes { get; internal set; }
             public long CommittedBytes { get; internal set; }
             public long CommittedTargetBytes { get; internal set; }
+            public string HostPlatform { get; internal set; }
             public long StackSizeBytes { get; internal set; }
             public int CurrentWorkerCount { get; internal set; }
             public int MaxWorkersCount { get; internal set; }
@@ -133,16 +134,29 @@ If (SELECT @@MICROSOFTVERSION / 0x01000000) >= 11
        Cast(physical_memory_kb as bigint) * 1024 PhysicalMemoryBytes,
        Cast(virtual_memory_kb as bigint) * 1024 VirtualMemoryBytes,
        Cast(committed_kb as bigint) * 1024 CommittedBytes,
-       Cast(committed_target_kb as bigint) * 1024 CommittedTargetBytes';
+       Cast(committed_target_kb as bigint) * 1024 CommittedTargetBytes,';
 Else 
     Set @sql = @sql + '
        null VirtualMachineType,
        physical_memory_in_bytes PhysicalMemoryBytes,
        virtual_memory_in_bytes VirtualMemoryBytes,
        Cast(bpool_committed as bigint) * 8 * 1024 CommittedBytes,
-       Cast(bpool_commit_target as bigint) * 8 * 1024 CommittedTargetBytes';
-Exec (@sql + ' 
-  From sys.dm_os_sys_info');";
+       Cast(bpool_commit_target as bigint) * 8 * 1024 CommittedTargetBytes,'
+
+If (SELECT @@MICROSOFTVERSION / 0x01000000) >= 14
+	Set @sql = @sql + '
+	   host_platform HostPlatform';
+Else 
+    Set @sql = @sql + '
+       CAST(''Windows'' as nvarchar) HostPlatform';
+SET @sql = @sql + ' 
+  From sys.dm_os_sys_info'
+
+If (SELECT @@MICROSOFTVERSION / 0x01000000) >= 14
+	Set @sql = @sql + '
+	Join sys.dm_os_host_info On 1=1';
+
+Exec (@sql);";
         }
 
         public class SQLServerPermissions

@@ -25,10 +25,10 @@ namespace StackExchange.Opserver.Data.SQL
             public decimal AvgWriteStallMs { get; internal set; }
 
             public string GetFetchSQL(Version v) => @"
-Select vs.volume_mount_point VolumeMountPoint, 
-       vs.volume_id VolumeId, 
-       vs.logical_volume_name LogicalVolumeName, 
-       vs.file_system_type FileSystemType, 
+Select COALESCE(vs.volume_mount_point, N'NA') VolumeMountPoint, 
+       COALESCE(vs.volume_id,N'') VolumeId, 
+       COALESCE(vs.logical_volume_name, N'NA') LogicalVolumeName, 
+       COALESCE(vs.file_system_type, N'NA') FileSystemType, 
        vs.total_bytes TotalBytes, 
        Min(vs.available_bytes) AvailableBytes, 
        vs.is_read_only IsReadOnly, 

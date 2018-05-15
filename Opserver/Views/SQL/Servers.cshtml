@@ -94,7 +94,7 @@ var props = i.ServerProperties.SafeData(true);
                     var dbs = i.Databases.SafeData(true);
                     <tr class="@i.RowClass()">
                         <td title="@i.Description">@i.IconSpan() <a href="~/sql/instance?node=@i.Name.UrlEncode()">@i.Name</a></td>
-                        <td><a href="~/sql/active?node=@i.Name.UrlEncode()">@(i.CurrentCPUPercent.HasValue ? i.CurrentCPUPercent.ToString() + "%" : "")</a></td>
+                        <td><a href="~/sql/active?node=@i.Name.UrlEncode()">@(i.CurrentCPUPercent.HasValue && i.ServerProperties.Data.HostPlatform == "Windows" ? i.CurrentCPUPercent.ToString() + "%" : "Unknown")</a></td>
                         <td><img src="~/graph/sql/cpu/spark?node=@i.Name&time=@DateTime.UtcNow.ToString("yyyy-MM-dd")" width="100" height="16" /></td>
                         @SQLHelpers.MemoryCell(i)
                         <td title="@dbs.Count.Pluralize("Database"):
